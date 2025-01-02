@@ -1,6 +1,6 @@
 from pydub import AudioSegment
 from pydub.playback import play
-from typing import cast
+from typing import cast, Callable
 import random
 import asyncio
 import board
@@ -43,7 +43,7 @@ def set_colors():
 
 # Initialize NeoPixel Strip
 strip = neopixel.NeoPixel(
-    LED_PIN,
+    LED_PIN, # type: ignore
     LEDS,
     brightness=BRIGHTNESS,
     auto_write=False,
@@ -93,34 +93,37 @@ def concatenate_steps(steps: list[list[AudioSegment]]) -> AudioSegment:
             full_audio += step
     return full_audio
 
-async def blink_led(speed: float, duration: float):
+async def blink_led(speed: float, duration: float, led_function: Callable):
     end_time = asyncio.get_event_loop().time() + duration/1000
     interval = 1.0/speed
     last_time = asyncio.get_event_loop().time()
-    print("ON")
+    led_function()
     is_on = True
     while True:
         current_time = asyncio.get_event_loop().time()
         if current_time >= end_time:
-            print("OFF, this section is stopped")
+            clear_leds()
             return
         if current_time > last_time + interval:
             if is_on:
-                print("OFF")
+                clear_leds()
                 is_on = False
             else:
-                print("ON")
+                led_function()
                 is_on = True
             last_time = current_time
 
 
 async def control_leds(segments: list[list[AudioSegment]]):
     base_speed = 1.0
-    for segment in segments:
+    color_functions = [set_green, set_yellow, set_red]
+    random.shuffle(color_functions)
+    for i,segment in enumerate(segments):
+        color_function = color_functions[i]
         led_speed = base_speed
         for step in segment:
             duration = len(step)
-            await blink_led(led_speed, duration)
+            await blink_led(led_speed, duration, color_function)
             led_speed += 0.5
         base_speed = 1.0
 

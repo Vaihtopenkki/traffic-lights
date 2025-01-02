@@ -8,7 +8,7 @@ import neopixel
 
 # Configuration
 LEDS = 17
-LED_PIN = board.D18
+LED_PIN = board.D21
 ORDER = neopixel.GRB
 BRIGHTNESS = 0.1  # Adjust as needed (0.0 to 1.0)
 

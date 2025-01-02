@@ -3,6 +3,52 @@ from pydub.playback import play
 from typing import cast
 import random
 import asyncio
+import board
+import neopixel
+
+# Configuration
+LEDS = 25
+LED_PIN = board.D18
+ORDER = neopixel.GRB
+BRIGHTNESS = 0.5  # Adjust as needed (0.0 to 1.0)
+
+GREEN = (0, 255, 0)
+YELLOW = (255, 255, 0)
+RED = (255, 0, 0)
+OFF = (0, 0, 0)
+
+def set_green():
+    for i in range(0, 4):  # LEDs 0 to 4 inclusive
+        strip[i] = GREEN
+    strip.show()
+
+def set_yellow():
+    for i in range(4,8):  # LEDs 5 to 8 inclusive
+        strip[i] = YELLOW
+    strip.show()
+
+def set_red():
+    for i in range(8,12):  # LEDs 9 to 12 inclusive
+        strip[i] = RED
+    strip.show()
+
+def clear_leds():
+    strip.fill(OFF)
+    strip.show()
+
+def set_colors():
+    set_green()
+    set_yellow()
+    set_red()
+
+# Initialize NeoPixel Strip
+strip = neopixel.NeoPixel(
+    LED_PIN,
+    LEDS,
+    brightness=BRIGHTNESS,
+    auto_write=False,
+    pixel_order=ORDER
+)
 
 def speedup(sound: AudioSegment, speed=1.0):
     sound_with_altered_frame_rate = sound._spawn(sound.raw_data, overrides={

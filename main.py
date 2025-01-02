@@ -5,6 +5,12 @@ import random
 import asyncio
 import board
 import neopixel
+import digitalio
+
+button = digitalio.DigitalInOut(board.D4)
+button.direction = digitalio.Direction.INPUT
+button.pull = digitalio.Pull.UP
+
 
 # Configuration
 LEDS = 17
@@ -129,8 +135,7 @@ async def control_leds(segments: list[list[AudioSegment]]):
             led_speed += 1
         base_speed = 1.0
 
-
-async def main():
+async def start():
     sound_file: AudioSegment = AudioSegment.from_wav('theme.wav')
     segments = get_segments(sound_file)
     stepped_segments: list[list[AudioSegment]] = split_song_into_steps(segments)
@@ -139,6 +144,12 @@ async def main():
         asyncio.to_thread(play, full_audio),
         control_leds(stepped_segments)
     )
+
+async def main():
+    while True:
+        if button.value:
+            await start()
+        await asyncio.sleep(0.3)
 
 if __name__ == "__main__":
     asyncio.run(main())

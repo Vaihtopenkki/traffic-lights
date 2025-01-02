@@ -125,7 +125,7 @@ async def control_leds(segments: list[list[AudioSegment]]):
         for step in segment:
             duration = len(step)
             await blink_led(led_speed, duration, color_function)
-            led_speed += 0.5
+            led_speed += 1
         base_speed = 1.0
 
 

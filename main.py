@@ -113,6 +113,7 @@ async def blink_led(speed: float, duration: float, led_function: Callable):
                 led_function()
                 is_on = True
             last_time = current_time
+        await asyncio.sleep(0.1) # No need to check all the time
 
 
 async def control_leds(segments: list[list[AudioSegment]]):

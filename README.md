@@ -16,3 +16,14 @@ to
 
 defaults.pcm.card 1
 defaults.ctl.card 1
+
+### Enable run on boot
+
+Copy `traffic-lights.service` to /etc/systemd/system
+
+```
+sudo systemctl enable traffic-lights.service
+sudo systemctl start traffic-lights.service
+```
+
+Note: If the button is not connected, the traffic-lights start right away

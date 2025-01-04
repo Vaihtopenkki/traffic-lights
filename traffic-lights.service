@@ -1,0 +1,18 @@
+[Unit]
+Description=Traffic Lights Controller
+After=multi-user.target
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/home/paitsio/traffic-lights
+Environment=PATH=/home/paitsio/traffic-lights/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/paitsio/traffic-lights/venv/bin/python /home/paitsio/traffic-lights/main.py
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

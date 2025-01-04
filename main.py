@@ -145,7 +145,12 @@ async def start():
         control_leds(stepped_segments)
     )
 
+
+def show_ready_state():
+    set_colors()
+
 async def main():
+    show_ready_state()
     while True:
         if button.value:
             await start()

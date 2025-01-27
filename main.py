@@ -12,16 +12,19 @@ button.direction = digitalio.Direction.INPUT
 button.pull = digitalio.Pull.UP
 
 
-# Configuration
+# LED Configuration
 LEDS = 17
 LED_PIN = board.D21
 ORDER = neopixel.GRB
 BRIGHTNESS = 0.1  # Adjust as needed (0.0 to 1.0)
-
 GREEN = (0, 255, 0)
 YELLOW = (255, 100, 0)
 RED = (255, 0, 0)
 OFF = (0, 0, 0)
+
+# Process Configuration
+SONG_SPEEDUP_INCREMENT = 0.2
+LED_SPEEDUP_INCREMENT = 1.0
 
 # Initialize NeoPixel Strip
 strip = neopixel.NeoPixel(
@@ -76,7 +79,7 @@ def split_song_into_steps(segments: list[AudioSegment]):
             start = i*base
             end = (i+1) * base + (remainder if i == (n-1) else 0)
             step = cast(AudioSegment, segment[start:end])
-            step = speedup(step, 1.0 + 0.1 * i)
+            step = speedup(step, 1.0 + SONG_SPEEDUP_INCREMENT * i)
             steps.append(step)
         result.append(steps)
     return result
@@ -132,7 +135,7 @@ async def control_leds(segments: list[list[AudioSegment]]):
         for step in segment:
             duration = len(step)
             await blink_led(led_speed, duration, color_function)
-            led_speed += 1
+            led_speed += LED_SPEEDUP_INCREMENT
         base_speed = 1.0
 
 async def start():
@@ -154,6 +157,8 @@ async def main():
     while True:
         if button.value:
             await start()
+            await asyncio.sleep(5)
+            show_ready_state()
         await asyncio.sleep(0.3)
 
 if __name__ == "__main__":
